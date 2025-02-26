@@ -16,7 +16,7 @@ export const options = {
   },
 };
 
-const BASE_URL = "http://203.154.184.162:5013/api/product/filter";
+const BASE_URL = "http://203.154.184.162:5012/api/product/filter";
 const AUTH_TOKEN =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGl0eUlEIjoiZmExY2VjMjAtOTc0NC00ZWUzLWFhNmQtM2Y4MTcyZTEwYTcwIiwiZmlyc3RuYW1lIjoiS2lzc2FkYXBhIiwibGFzdG5hbWUiOiJOZ3VhbmNob24iLCJjb21wYW55SUQiOiIiLCJpYXQiOjE3NDAzODI5NzksImV4cCI6MTc0MDQ2OTM3OX0.Gi2f0vsIpAK-lJ8M2XCiBzBMZL8qohg2VFfMIBkoIvg";
 const X_TTT_PMRP = "ecffd46cf0f300f79f21afcac734ea9c";
@@ -25,7 +25,7 @@ const X_TTT_PMRP = "ecffd46cf0f300f79f21afcac734ea9c";
 const payload = JSON.stringify({
   page: 1,
   size: 10,
-  product_no: "5522601555222",
+  product_no: "",
   product_name: "",
   product_model_id: "",
   oem_id: "e9549a12-9b0d-4b10-b2ef-ac3607c42ab4",
