@@ -3,8 +3,8 @@ import { check } from "k6";
 
 export const options = {
   stages: [
-    { duration: "30s", target: 500 },
-    { duration: "5m", target: 1000 },
+    { duration: "1m", target: 5000 },
+    { duration: "7m", target: 10000 },
     { duration: "30s", target: 0 },
   ],
   thresholds: {
@@ -14,15 +14,25 @@ export const options = {
   },
 };
 
-const BASE_URL = "http://203.154.184.162:5012/api/toolingSupplier/getAll";
+const BASE_URL =
+  "http://203.154.184.162:5012/api/logToolingEditAmount/SaveLotOutBound";
 const AUTH_TOKEN =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGl0eUlEIjoiZmExY2VjMjAtOTc0NC00ZWUzLWFhNmQtM2Y4MTcyZTEwYTcwIiwiZmlyc3RuYW1lIjoiS2lzc2FkYXBhIiwibGFzdG5hbWUiOiJOZ3VhbmNob24iLCJjb21wYW55SUQiOiIiLCJpYXQiOjE3NDA1Mzc1OTIsImV4cCI6MTc0MDYyMzk5Mn0.OMOpNI0ygR_FjX6XYLl2Sz7r-DLyxEX-ShCYJy8g5o4";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGl0eUlEIjoiZmExY2VjMjAtOTc0NC00ZWUzLWFhNmQtM2Y4MTcyZTEwYTcwIiwiZmlyc3RuYW1lIjoiS2lzc2FkYXBhIiwibGFzdG5hbWUiOiJOZ3VhbmNob24iLCJjb21wYW55SUQiOiIiLCJpYXQiOjE3NDA2MjQ0NzgsImV4cCI6MTc0MDcxMDg3OH0.ZiDS9D7p1q0gF0SK_dGGUKhhsa_2UEquRz0rpGIEd_g";
 const X_TTT_PMRP = "ecffd46cf0f300f79f21afcac734ea9c";
 
 // 🔹 Payload ที่ต้องส่งไปกับคำขอ POST
 const payload = JSON.stringify({
-  ts_company_id: "1a947e52-07ad-44fb-baca-aa24741512c3",
-  ts_oem_id: "e9549a12-9b0d-4b10-b2ef-ac3607c42ab4",
+  lot_no: "20250227-0001",
+  tooling_id: "24ee6425-6808-4918-843f-ebbdc153f603",
+  edit_type: null,
+  amount: "10",
+  remark: "dream out 10",
+  fup: "0fc9e975-8bfa-43ff-9f6f-c31120c9c957",
+  oem_id: "e9549a12-9b0d-4b10-b2ef-ac3607c42ab4",
+  company_id: "1a947e52-07ad-44fb-baca-aa24741512c3",
+  current_amount: null,
+  is_fifo: true,
+  select: null,
 });
 
 // 🔹 Headers ที่ใช้
