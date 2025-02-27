@@ -3,9 +3,9 @@ import { check, sleep } from "k6";
 
 export const options = {
   stages: [
-    { duration: "3m", target: 300 },
-    { duration: "3m", target: 600 },
-    { duration: "15s", target: 0 },
+    { duration: "10s", target: 300 },
+    // { duration: "3m", target: 600 },
+    // { duration: "15s", target: 0 },
   ],
   thresholds: {
     http_req_duration: ["p(90)<500"],
@@ -29,7 +29,7 @@ const params = {
 };
 
 export default function () {
-  const uniquePoNo = `PO_DREAMie_${__VU}_${__ITER}`; // ใช้ VU ID และ Iteration ID
+  const uniquePoNo = `PO_DREAM_WINK_${__VU}_${__ITER}`; // ใช้ VU ID และ Iteration ID
 
   const dynamicPayload = JSON.stringify({
     user_id: "0fc9e975-8bfa-43ff-9f6f-c31120c9c957",

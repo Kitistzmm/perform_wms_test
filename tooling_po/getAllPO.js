@@ -30,7 +30,7 @@ export default function () {
     oem_id: "e9549a12-9b0d-4b10-b2ef-ac3607c42ab4",
     company_id: "1a947e52-07ad-44fb-baca-aa24741512c3",
     page: page,
-    size: PAGE_SIZE, // ใช้ Pagination เพื่อลดโหลด APIs
+    size: PAGE_SIZE,
   });
 
   const params = {
