@@ -17,7 +17,8 @@ export const options = {
 };
 
 // ✅ 2️⃣ ตั้งค่า API และ Headers
-const BASE_URL = "http://203.154.184.162:5012/api/product/summaryReport";
+const BASE_URL =
+  "http://203.154.184.162:5012/api/logProductFgEditAmount/genLotNo";
 const AUTH_TOKEN =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGl0eUlEIjoiZmExY2VjMjAtOTc0NC00ZWUzLWFhNmQtM2Y4MTcyZTEwYTcwIiwiZmlyc3RuYW1lIjoiS2lzc2FkYXBhIiwibGFzdG5hbWUiOiJOZ3VhbmNob24iLCJjb21wYW55SUQiOiIiLCJpYXQiOjE3NDA2NzM1MTAsImV4cCI6MTc0MDc1OTkxMH0.OSIfb6QOnRxADVUxVxnLU8rSfohcI_uwGie-SU6wsFA";
 const X_TTT_PMRP = "ecffd46cf0f300f79f21afcac734ea9c";
@@ -43,9 +44,6 @@ export default function () {
 // 📌 ฟังก์ชัน: สร้าง Payload
 function getPayload(page) {
   return JSON.stringify({
-    product_no: "",
-    product_name: "",
-    product_model_id: "",
     oem_id: "e9549a12-9b0d-4b10-b2ef-ac3607c42ab4",
     company_id: "1a947e52-07ad-44fb-baca-aa24741512c3",
     page: page,

@@ -1,33 +1,32 @@
 import http from "k6/http";
 import { check, sleep } from "k6";
 
-// ✅ 1️⃣ ตั้งค่า Virtual Users
+// ✅ 1️⃣ ตั้งค่า Virtual Users และ Ramp-up
 export const options = {
   stages: [
-    { duration: "5m", target: 1000 },
-    { duration: "5m", target: 2000 },
-    { duration: "2m", target: 500 },
-    { duration: "30s", target: 0 },
+    { duration: "3m", target: 500 }, // ค่อย ๆ เพิ่มเป็น 500 VUs
+    { duration: "5m", target: 1000 }, // ค่อย ๆ เพิ่มเป็น 1000 VUs
+    { duration: "3m", target: 500 }, // ค่อย ๆ ลดลงเหลือ 500 VUs
+    { duration: "1m", target: 100 }, // ลดลงเหลือ 100 VUs
+    { duration: "30s", target: 0 }, // ค่อย ๆ ปิด Load Test
   ],
   thresholds: {
-    http_req_duration: ["p(90)<800"],
+    http_req_duration: ["p(90)<800"], // จำกัด Response Time ใน 800ms
     "http_req_duration{status:200}": ["p(90)<600"],
-    http_reqs: ["count>50000"],
+    http_reqs: ["count<50000"], // จำกัดจำนวน Requests รวม
   },
 };
 
 // ✅ 2️⃣ ตั้งค่า API และ Headers
-const BASE_URL = "http://203.154.184.162:5012/api/product/summaryReport";
+const BASE_URL =
+  "http://203.154.184.162:5012/api/logProductFgEditAmount/getLotInStock";
 const AUTH_TOKEN =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGl0eUlEIjoiZmExY2VjMjAtOTc0NC00ZWUzLWFhNmQtM2Y4MTcyZTEwYTcwIiwiZmlyc3RuYW1lIjoiS2lzc2FkYXBhIiwibGFzdG5hbWUiOiJOZ3VhbmNob24iLCJjb21wYW55SUQiOiIiLCJpYXQiOjE3NDA2NzM1MTAsImV4cCI6MTc0MDc1OTkxMH0.OSIfb6QOnRxADVUxVxnLU8rSfohcI_uwGie-SU6wsFA";
 const X_TTT_PMRP = "ecffd46cf0f300f79f21afcac734ea9c";
 
-// ✅ 3️⃣ ใช้ Pagination เพื่อลดภาระของ API
-const PAGE_SIZE = 100; // จำกัด API ให้ส่งคืนข้อมูลทีละ 100 รายการ
-
+// ✅ 3️⃣ ฟังก์ชันหลัก
 export default function () {
-  const page = getRandomPage();
-  const payload = getPayload(page);
+  const payload = getDynamicPayload();
   const params = getHeaders();
 
   // 🔹 ส่งคำขอ POST
@@ -37,19 +36,15 @@ export default function () {
   validateResponse(response);
 
   // ✅ 4️⃣ ใช้ sleep() เพื่อลดความเร็วการยิง API
-  sleep(getRandomDelay(3, 6)); // หยุดพักระหว่าง 3 - 6 วินาที
+  sleep(getRandomDelay(6, 12)); // หยุดพักระหว่าง 6 - 12 วินาที
 }
 
-// 📌 ฟังก์ชัน: สร้าง Payload
-function getPayload(page) {
+// 📌 ฟังก์ชัน: สร้าง Payload แบบ Dynamic
+function getDynamicPayload() {
   return JSON.stringify({
-    product_no: "",
-    product_name: "",
-    product_model_id: "",
-    oem_id: "e9549a12-9b0d-4b10-b2ef-ac3607c42ab4",
+    product_id: getRandomProductId(),
+    oem_id: "ad5431b1-4136-4695-a1c2-7fe02b137d68",
     company_id: "1a947e52-07ad-44fb-baca-aa24741512c3",
-    page: page,
-    size: PAGE_SIZE,
   });
 }
 
@@ -60,6 +55,7 @@ function getHeaders() {
       "Content-Type": "application/json",
       Authorization: AUTH_TOKEN,
       "X-TTT-PMRP": X_TTT_PMRP,
+      "Cache-Control": "no-cache", // ลดการใช้ Cache ของเซิร์ฟเวอร์
     },
   };
 }
@@ -67,7 +63,7 @@ function getHeaders() {
 // 📌 ฟังก์ชัน: ตรวจสอบผลลัพธ์ของ API
 function validateResponse(response) {
   console.log(
-    `🔍 Page: ${response.request.body} | Status: ${response.status} | ⏳ Response Time: ${response.timings.duration} ms`
+    `📦 Sent Payload | Product: ${response.request.body} | Status: ${response.status} | ⏳ Response Time: ${response.timings.duration} ms`
   );
 
   check(response, {
@@ -77,9 +73,15 @@ function validateResponse(response) {
   });
 }
 
-// 📌 ฟังก์ชัน: สุ่มเลือกหน้า
-function getRandomPage() {
-  return Math.floor(Math.random() * 5) + 1; // ดึงข้อมูลระหว่างหน้า 1 - 5
+// 📌 ฟังก์ชัน: สุ่ม `product_id`
+function getRandomProductId() {
+  const productIds = [
+    "01356618-f3a6-4f50-8a4f-4cc720b12c2a",
+    "05815c6e-253d-4de8-bd8d-ee338ccff162",
+    "099eeeb0-8a7c-4ad7-a0d0-8255574427e2",
+    "10c95968-cf68-45a5-b3dc-20c4decb16e7",
+  ];
+  return productIds[Math.floor(Math.random() * productIds.length)];
 }
 
 // 📌 ฟังก์ชัน: สุ่มเวลาหยุดพัก
